@@ -2,7 +2,7 @@
 
 # Get the triggering PR number from the commit: CF_REVISION
 cat << EOF > DATA.txt
-{ "query": "query {search (first: 100, type: ISSUE, query: \"type:pr repo:$CF_COMMIT_AUTHOR/$CF_REPO_NAME $CF_REVISION\") {nodes {... on PullRequest {id, number, title}}}}" }
+{ "query": "query {search (first: 100, type: ISSUE, query: \"type:pr repo:$CF_REPO_OWNER/$CF_REPO_NAME $CF_REVISION\") {nodes {... on PullRequest {id, number, title}}}}" }
 EOF
 HEADER="Authorization: token $GITHUB_TOKEN"
 URL="https://api.github.com/graphql"
