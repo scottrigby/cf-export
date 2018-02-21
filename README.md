@@ -1,6 +1,6 @@
 # cf-export
 
-Codefresh [image](https://hub.docker.com/r/r6by/cf-export/) feature request demo for a `CF_PR_NUMBER` ENV var.
+Codefresh [image](https://hub.docker.com/r/r6by/cf-export/) to export Pull Request ENV vars.
 
 ## Test steps
 
@@ -27,13 +27,13 @@ In Codefresh UI:
     version: '1.0'
     steps:
     CFExport:
-        title: Export CF_PR_NUMBER ENV var
+        title: Export CF_PR_ ENV vars
         image: r6by/cf-export
     CFRead:
-        title: Test read CF ENV vars
+        title: Test read CF_PR_ ENV vars
         image: alpine:latest
         commands:
-        - env | grep CF_PR_NUMBER
+        - env | grep CF_PR_
     ```
 
 ### Create a new pull request
@@ -50,5 +50,8 @@ In GitHub UI:
 In Codefresh UI:
 
 1. Browse to `Builds`, and click `View log` next to the build that should have triggered from your new PR.
-1. The `Test read CF ENV vars` step should output `CF_PR_NUMBER=1`, where `1` is the number of your new PR.
+1. The `Test read CF ENV vars` step should output:
+    - `CF_PR_NUMBER=1`, where `1` is the number of your new PR
+    - `CF_PR_STATE=OPEN`, if your PR is open. Otherwise `CLOSED` or `MERGED`
 1. Create another pull request, and ensure `CF_PR_NUMBER` matches the new PR number.
+1. Close, reopen, and merge the new PR, and ensure `CF_PR_STATE` matches each state.
