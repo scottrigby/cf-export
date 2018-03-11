@@ -1,7 +1,4 @@
-FROM alpine:latest
-RUN apk update \
-    && apk add jq \
-    && rm -rf /var/cache/apk/* \
-    && apk add --no-cache curl
-COPY cf-export.sh /
-CMD ["/cf-export.sh"]
+FROM alpine:3.7
+RUN apk --no-cache add jq curl
+COPY cf-github-pr-export /usr/local/bin/
+CMD ["cf-github-pr-export"]

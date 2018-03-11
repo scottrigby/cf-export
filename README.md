@@ -1,6 +1,6 @@
-# cf-export
+# cf-github-pr-export
 
-Codefresh [image](https://hub.docker.com/r/r6by/cf-export/) to export Pull Request ENV vars.
+Codefresh [image](https://hub.docker.com/r/r6by/cf-github-pr-export/) to export GitHub Pull Request ENV vars.
 
 ## Test steps
 
@@ -28,7 +28,7 @@ In Codefresh UI:
     steps:
     CFExport:
         title: Export CF_PR_ ENV vars
-        image: r6by/cf-export
+        image: r6by/cf-github-pr-export
     CFRead:
         title: Test read CF_PR_ ENV vars
         image: alpine:latest
