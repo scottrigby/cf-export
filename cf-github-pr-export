@@ -15,7 +15,7 @@ EOF
 PR_NUMBER=$(curl --silent $URL -H "$HEADER" -d @DATA.txt | jq --raw-output '.data.search.nodes | .[].number')
 if [ ! -z "$PR_NUMBER" ];then
   echo "CF_PR_NUMBER=${PR_NUMBER}" >> ${CF_VOLUME_PATH}/env_vars_to_export
-  echo 'Exported CF_PR_NUMBER'
+  echo "Exported CF_PR_NUMBER ${CF_PR_NUMBER}"
 fi
 rm DATA.txt
 
@@ -26,6 +26,6 @@ EOF
 STATE=$(curl --silent $URL -H "$HEADER" -d @DATA.txt | jq --raw-output .data.repository.pullRequest.state)
 if [ ! -z "$STATE" ];then
   echo "CF_PR_STATE=${STATE}" >> ${CF_VOLUME_PATH}/env_vars_to_export
-  echo 'Exported CF_PR_STATE'
+  echo "Exported CF_PR_STATE ${CF_PR_STATE}"
 fi
 rm DATA.txt
