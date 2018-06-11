@@ -10,9 +10,9 @@ URL="https://api.github.com/graphql"
 
 # Get the triggering PR number from CF_REVISION, and set CF_PR_NUMBER.
 cat << EOF > DATA.txt
-{ "query": "query {search (first: 100, type: ISSUE, query: \"type:pr repo:$CF_REPO_OWNER/$CF_REPO_NAME $CF_REVISION\") {nodes {... on PullRequest {id, number, title}}}}" }
+{ "query": "query {search (first: 1, type: ISSUE, query: \"type:pr repo:$CF_REPO_OWNER/$CF_REPO_NAME $CF_REVISION\") {nodes {... on PullRequest {id, number, title}}}}" }
 EOF
-CF_PR_NUMBER=$(curl --silent $URL -H "$HEADER" -d @DATA.txt | jq --raw-output '.data.search.nodes | .[].number')
+CF_PR_NUMBER=$(curl --silent $URL -H "$HEADER" -d @DATA.txt | jq --raw-output '.data.search.nodes | .[0].number')
 if [ ! -z "$CF_PR_NUMBER" ];then
   echo "CF_PR_NUMBER=${CF_PR_NUMBER}" >> ${CF_VOLUME_PATH}/env_vars_to_export
   echo "Exported CF_PR_NUMBER ${CF_PR_NUMBER}"
