@@ -8,22 +8,16 @@ fi
 HEADER="Authorization: token $GITHUB_TOKEN"
 URL="https://api.github.com/graphql"
 
-# Get the triggering PR number from CF_REVISION, and set CF_PR_NUMBER.
+# Get the triggering PR number and state from CF_REVISION, and set CF_PR_NUMBER and CF_PR_STATE.
 cat << EOF > DATA.txt
-{ "query": "query {search (first: 100, type: ISSUE, query: \"type:pr repo:$CF_REPO_OWNER/$CF_REPO_NAME $CF_REVISION\") {nodes {... on PullRequest {id, number, title}}}}" }
+{ "query": "query {search (first: 100, type: ISSUE, query: \"type:pr repo:$CF_REPO_OWNER/$CF_REPO_NAME $CF_REVISION\") {nodes {... on PullRequest {id, number, title, state}}}}" }
 EOF
-CF_PR_NUMBER=$(curl --silent $URL -H "$HEADER" -d @DATA.txt | jq --raw-output '.data.search.nodes | .[-1].number')
+CF_PR_NUMBER=$(curl --silent $URL -H "$HEADER" -d @DATA.txt | jq --raw-output '.data.search.nodes[-1].number')
 if [ ! -z "$CF_PR_NUMBER" ];then
   echo "CF_PR_NUMBER=${CF_PR_NUMBER}" >> ${CF_VOLUME_PATH}/env_vars_to_export
   echo "Exported CF_PR_NUMBER ${CF_PR_NUMBER}"
 fi
-rm DATA.txt
-
-# Get the triggering PR state from CF_PR_NUMBER, and set CF_PR_STATE.
-cat << EOF > DATA.txt
-{ "query": "query {repository(owner: \"$CF_REPO_OWNER\", name: \"$CF_REPO_NAME\") {pullRequest(number: $CF_PR_NUMBER) {state}}}" }
-EOF
-CF_PR_STATE=$(curl --silent $URL -H "$HEADER" -d @DATA.txt | jq --raw-output .data.repository.pullRequest.state)
+CF_PR_STATE=$(curl --silent $URL -H "$HEADER" -d @DATA.txt | jq --raw-output '.data.search.nodes[-1].state')
 if [ ! -z "$CF_PR_STATE" ];then
   echo "CF_PR_STATE=${CF_PR_STATE}" >> ${CF_VOLUME_PATH}/env_vars_to_export
   echo "Exported CF_PR_STATE ${CF_PR_STATE}"
